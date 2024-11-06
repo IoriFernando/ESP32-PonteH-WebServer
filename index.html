@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Direcional</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .container { display: flex; flex-direction: column; align-items: center; }
+        .row { display: flex; justify-content: center; margin: 10px 0; }
+        button {
+            padding: 20px 40px;
+            font-size: 20px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        /* Cores padrão */
+        .normal { background-color: #007BFF; }  /* Azul */
+        /* Cores ao pressionar */
+        .pressed { background-color: #28A745; }  /* Verde */
+    </style>
+</head>
+<body>
+
+    <h1>Controle de Direções</h1>
+    <div class="container">
+        <div class="row">
+            <button id="up" class="normal" onclick="changeColor('up')">Cima</button>
+        </div>
+        <div class="row">
+            <button id="left" class="normal" onclick="changeColor('left')">Esquerda</button>
+            <button id="right" class="normal" onclick="changeColor('right')">Direita</button>
+        </div>
+        <div class="row">
+            <button id="down" class="normal" onclick="changeColor('down')">Baixo</button>
+        </div>
+    </div>
+
+    <script>
+        // Função para trocar a cor do botão
+        function changeColor(direction) {
+            // Recupera todos os botões
+            const buttons = ['up', 'left', 'right', 'down'];
+            
+            // Remove a classe 'pressed' de todos os botões e adiciona a classe 'normal'
+            buttons.forEach(button => {
+                document.getElementById(button).classList.remove('pressed');
+                document.getElementById(button).classList.add('normal');
+            });
+
+            // Adiciona a classe 'pressed' ao botão clicado
+            document.getElementById(direction).classList.remove('normal');
+            document.getElementById(direction).classList.add('pressed');
+
+            // Opcional: Altere a cor de volta para a cor normal após 500ms (meio segundo)
+            setTimeout(() => {
+                document.getElementById(direction).classList.remove('pressed');
+                document.getElementById(direction).classList.add('normal');
+            }, 500);
+        }
+    </script>
+
+</body>
+</html>
