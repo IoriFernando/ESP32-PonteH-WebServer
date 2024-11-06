@@ -16,8 +16,12 @@ const char* html = R"rawliteral(
 <head>
     <title>Controle de LEDs</title>
     <style>
-        body { font-family: Arial; text-align: center; margin-top: 50px; }
-        button { padding: 10px 20px; font-size: 20px; }
+        body { font-family: Arial; 
+        text-align: center; 
+        margin-top: 50px; }
+        
+        button { padding: 10px 20px; 
+        font-size: 20px; }
     </style>
 </head>
 <body>

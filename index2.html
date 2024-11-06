@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Controle de LEDs</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                text-align: center; 
+                margin-top: 50px; 
+            }
+
+            .container { 
+                display: flex; 
+                flex-direction: column; 
+                align-items: center; 
+            }
+            
+            .row { 
+                display: flex;
+                justify-content: center; 
+                margin: 10px 0; 
+            }
+
+            button {
+                padding: 20px 40px;
+                font-size: 20px;
+                color: white;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+                margin: 5px;
+            }
+
+            .normal { background-color: #007BFF; }  /* Azul */
+            /* Cores ao pressionar */
+            .pressed { background-color: #28A745; }  /* Verde */
+        </style>
+    </head>
+
+    <body>
+        <h1>Controle de LEDs</h1>
+        <h2>LED 1</h2>
+        <button onclick="toggleLED(1, 'on')">Ligar</button>
+        <button onclick="toggleLED(1, 'off')">Desligar</button>
+        <h2>LED 2</h2>
+        <button onclick="toggleLED(2, 'on')">Ligar</button>
+        <button onclick="toggleLED(2, 'off')">Desligar</button>
+
+
+        <div class="container">
+            <div class="row">
+                <button id="up" class="normal" onclick="changerColor('up')">Cima</button>
+            </div>
+            <div class="row">
+                <button id="letf" class="normal" onclick="changerColor('letf')" onclick="toggleLED(1, 'on')">Esquerda</button>
+                <button id="right" class="normal" onclick="changerColor('right')">Direita</button>
+            </div>
+
+            <div class="row">
+                <button id="down" class="normal" onclick="changerColor('down')">Baixo</button>
+            </div>
+        </div>
+
+
+
+
+
+        <script>
+            function toggleLED(led, state) {
+                fetch('/led' + led + '/' + state)
+                    .then(response => response.text())
+                    .then(data => alert(data));
+            }
+        </script>
+    </body>
+</html>
