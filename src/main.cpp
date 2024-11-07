@@ -5,42 +5,116 @@
 const char* ssid = "Teste";
 const char* password = "teste123";
 
-const int led1Pin = 26; // Pino do LED 1
-const int led2Pin = 27; // Pino do LED 2
+const int int1 = 13; // Pino do LED 1
+const int int2 = 12; // Pino do LED 2
+const int int3 = 27;
+const int int4 = 26;
 
 AsyncWebServer server(80);
 
 const char* html = R"rawliteral(
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Controle de LEDs</title>
-    <style>
-        body { font-family: Arial; 
-        text-align: center; 
-        margin-top: 50px; }
-        
-        button { padding: 10px 20px; 
-        font-size: 20px; }
-    </style>
-</head>
-<body>
-    <h1>Controle de LEDs</h1>
-    <h2>LED 1</h2>
-    <button onclick="toggleLED(1, 'on')">Ligar</button>
-    <button onclick="toggleLED(1, 'off')">Desligar</button>
-    <h2>LED 2</h2>
-    <button onclick="toggleLED(2, 'on')">Ligar</button>
-    <button onclick="toggleLED(2, 'off')">Desligar</button>
+    <head>
+        <title>Controle de LEDs</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                text-align: center; 
+                margin: 0;  /* Remove qualquer margem da página */
+                height: 100vh;  /* Faz o body ocupar 100% da altura da tela */
+                display: flex;   /* Define o display como flex */
+                justify-content: center;  /* Centraliza os elementos horizontalmente */
+                align-items: center;  /* Centraliza os elementos verticalmente */
+            }
 
-    <script>
-        function toggleLED(led, state) {
-            fetch('/led' + led + '/' + state)
-                .then(response => response.text())
-                .then(data => alert(data));
-        }
-    </script>
-</body>
+            .container { 
+                display: flex;  /* Flexbox */
+                flex-direction: column;  /* Coloca os botões em colunas */
+                align-items: center;  /* Centraliza os botões dentro da container */
+            }
+            
+            .row { 
+                display: flex;
+                justify-content: center;  /* Alinha os botões na horizontal dentro da linha */
+                margin: 10px 0;  /* Dá um espaçamento entre as linhas */
+            }
+
+            button {
+                padding: 20px 40px;
+                font-size: 20px;
+                color: white;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+                margin: 5px;
+            }
+
+            .normal { background-color: #007BFF; }  /* Azul */
+        </style>
+    </head>
+
+    <body>
+
+        <div class="container">
+            <div class="row">
+                <button id="up" class="normal" onclick="handleAction('up')">C</button>
+            </div>
+
+            <div class="row">
+                <button id="left" class="normal" onclick="handleAction('left')">E</button>
+                <button id="right" class="normal" onclick="handleAction('right')">D</button>
+            </div>
+
+            <div class="row">
+                <button id="down" class="normal" onclick="handleAction('down')">B</button>
+            </div>
+        </div>
+
+        <script>
+            // Função para alternar os LEDs conforme a direção
+            function handleAction(direction) {
+                // Exibe qual int foi acionado e envia os pedidos HTTP
+                switch (direction) {
+                    case 'up':
+                        alert('INTs 1 e 3 foram acionados');
+                        toggleLED(1, 'on');
+                        toggleLED(3, 'on');
+                        toggleLED(2, 'off');
+                        toggleLED(4, 'off');
+                        break;
+                    case 'down':
+                        alert('INTs 2 e 4 foram acionados');
+                        toggleLED(2, 'on');
+                        toggleLED(4, 'on');
+                        toggleLED(1, 'off');
+                        toggleLED(3, 'off');
+                        break;
+                    case 'left':
+                        alert('INT 2 foi acionado');
+                        toggleLED(2, 'on');
+                        toggleLED(1, 'off');
+                        toggleLED(3, 'off');
+                        toggleLED(4, 'off');
+                        break;
+                    case 'right':
+                        alert('INT 3 foi acionado');
+                        toggleLED(3, 'on');
+                        toggleLED(1, 'off');
+                        toggleLED(2, 'off');
+                        toggleLED(4, 'off');
+                        break;
+                }
+            }
+
+            // Função para fazer o HTTP request de acionamento dos LEDs
+            function toggleLED(int, state) {
+                fetch('/int' + int + '/' + state)
+                    .then(response => response.text())
+                    .catch(error => console.error('Erro ao acionar o LED:', error));
+            }
+        </script>
+    </body>
 </html>
 )rawliteral";
 
@@ -48,10 +122,16 @@ void setup() {
     Serial.begin(115200);
 
     // Inicializa os pinos dos LEDs
-    pinMode(led1Pin, OUTPUT);
-    pinMode(led2Pin, OUTPUT);
-    digitalWrite(led1Pin, LOW);
-    digitalWrite(led2Pin, LOW);
+    pinMode(int1, OUTPUT);
+    pinMode(int2, OUTPUT);
+    pinMode(int3, OUTPUT);    
+    pinMode(int4, OUTPUT);
+
+
+    digitalWrite(int1, LOW);
+    digitalWrite(int2, LOW);
+    digitalWrite(int3, LOW);
+    digitalWrite(int4, LOW);
 
     // Conecta ao WiFi
     WiFi.begin(ssid, password);
@@ -68,24 +148,51 @@ void setup() {
         request->send(200, "text/html", html);
     });
 
-    server.on("/led1/on", HTTP_GET, [](AsyncWebServerRequest *request) {
-        digitalWrite(led1Pin, HIGH);
-        request->send(200, "text/plain", "LED 1 ligado");
+
+    //Acionamentos int1
+    server.on("/int1/on", HTTP_GET, [](AsyncWebServerRequest *request) {
+        digitalWrite(int1, HIGH);
+        request->send(200, "text/plain", "int 1 ligado");
     });
 
-    server.on("/led1/off", HTTP_GET, [](AsyncWebServerRequest *request) {
-        digitalWrite(led1Pin, LOW);
-        request->send(200, "text/plain", "LED 1 desligado");
+    server.on("/int1/off", HTTP_GET, [](AsyncWebServerRequest *request) {
+        digitalWrite(int1, LOW);
+        request->send(200, "text/plain", "int1 desligado");
     });
 
-    server.on("/led2/on", HTTP_GET, [](AsyncWebServerRequest *request) {
-        digitalWrite(led2Pin, HIGH);
-        request->send(200, "text/plain", "LED 2 ligado");
+
+    //Acionamentos int2
+    server.on("/int2/on", HTTP_GET, [](AsyncWebServerRequest *request) {
+        digitalWrite(int2, HIGH);
+        request->send(200, "text/plain", "int2 ligado");
+    });
+
+    server.on("/int2/off", HTTP_GET, [](AsyncWebServerRequest *request) {
+        digitalWrite(int2, LOW);
+        request->send(200, "text/plain", "int2 desligado");
+    });
+
+
+    //Acionamentos int3
+    server.on("/int3/on", HTTP_GET, [](AsyncWebServerRequest *request) {
+        digitalWrite(int3, HIGH);
+        request->send(200, "text/plain", "int3 ligado");
+    });
+
+    server.on("/int3/off", HTTP_GET, [](AsyncWebServerRequest *request) {
+        digitalWrite(int3, LOW);
+        request->send(200, "text/plain", "int3 desligado");
+    });
+
+    //Acionamentos int4
+    server.on("/int4/on", HTTP_GET, [](AsyncWebServerRequest *request) {
+        digitalWrite(int4, HIGH);
+        request->send(200, "text/plain", "int4 ligado");
     });
 
     server.on("/led2/off", HTTP_GET, [](AsyncWebServerRequest *request) {
-        digitalWrite(led2Pin, LOW);
-        request->send(200, "text/plain", "LED 2 desligado");
+        digitalWrite(int4, LOW);
+        request->send(200, "text/plain", "int4 desligado");
     });
 
     // Inicia o servidor
