@@ -8,7 +8,7 @@ const char* password = "teste123";
 const int int1 = 13; // Pino do LED 1
 const int int2 = 12; // Pino do LED 2
 const int int3 = 27;
-const int int4 = 26;
+const int int4 = 25;
 
 AsyncWebServer server(80);
 
@@ -26,18 +26,20 @@ const char* html = R"rawliteral(
                 display: flex;   /* Define o display como flex */
                 justify-content: center;  /* Centraliza os elementos horizontalmente */
                 align-items: center;  /* Centraliza os elementos verticalmente */
+                background-color: #f0f0f0;  /* Adiciona uma cor de fundo clara */
             }
 
             .container { 
                 display: flex;  /* Flexbox */
                 flex-direction: column;  /* Coloca os botões em colunas */
                 align-items: center;  /* Centraliza os botões dentro da container */
+                gap: 20px;  /* Espaçamento entre as linhas */
             }
             
             .row { 
                 display: flex;
                 justify-content: center;  /* Alinha os botões na horizontal dentro da linha */
-                margin: 10px 0;  /* Dá um espaçamento entre as linhas */
+                gap: 20px;  /* Espaçamento entre os botões */
             }
 
             button {
@@ -47,10 +49,35 @@ const char* html = R"rawliteral(
                 border: none;
                 cursor: pointer;
                 border-radius: 5px;
-                margin: 5px;
+                background-color: #007BFF; /* Azul */
+                transition: background-color 0.3s ease;  /* Suaviza a transição de cor */
             }
 
-            .normal { background-color: #007BFF; }  /* Azul */
+            button:hover {
+                background-color: #0056b3;  /* Cor de fundo ao passar o mouse */
+            }
+
+            /* Botões de posição específica */
+            .normal { 
+                background-color: #007BFF;  /* Azul */
+            }
+
+            .row.centered {
+                justify-content: space-between;  /* Distribui os botões uniformemente */
+                width: 80%;  /* Aumenta a largura para os botões do centro */
+            }
+
+            /* Responsividade: para telas menores, os botões são redimensionados */
+            @media (max-width: 600px) {
+                button {
+                    font-size: 16px;
+                    padding: 15px 30px;
+                }
+
+                .container {
+                    gap: 10px;  /* Reduz o espaçamento entre as linhas em telas pequenas */
+                }
+            }
         </style>
     </head>
 
@@ -63,6 +90,7 @@ const char* html = R"rawliteral(
 
             <div class="row">
                 <button id="left" class="normal" onclick="handleAction('left')">E</button>
+                <button id="center" class="normal" onclick="handleAction('center')">O</button>
                 <button id="right" class="normal" onclick="handleAction('right')">D</button>
             </div>
 
@@ -92,8 +120,8 @@ const char* html = R"rawliteral(
                         break;
                     case 'left':
                         alert('INT 2 foi acionado');
-                        toggleLED(2, 'on');
-                        toggleLED(1, 'off');
+                        toggleLED(1, 'on');
+                        toggleLED(2, 'off');
                         toggleLED(3, 'off');
                         toggleLED(4, 'off');
                         break;
@@ -102,6 +130,13 @@ const char* html = R"rawliteral(
                         toggleLED(3, 'on');
                         toggleLED(1, 'off');
                         toggleLED(2, 'off');
+                        toggleLED(4, 'off');
+                        break;
+                    case 'center':
+                        alert('Todos foram zerados');
+                        toggleLED(1, 'off');
+                        toggleLED(2, 'off');
+                        toggleLED(3, 'off');
                         toggleLED(4, 'off');
                         break;
                 }
@@ -116,6 +151,7 @@ const char* html = R"rawliteral(
         </script>
     </body>
 </html>
+
 )rawliteral";
 
 void setup() {
@@ -190,7 +226,7 @@ void setup() {
         request->send(200, "text/plain", "int4 ligado");
     });
 
-    server.on("/led2/off", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/int4/off", HTTP_GET, [](AsyncWebServerRequest *request) {
         digitalWrite(int4, LOW);
         request->send(200, "text/plain", "int4 desligado");
     });
