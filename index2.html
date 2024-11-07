@@ -6,19 +6,23 @@
             body { 
                 font-family: Arial, sans-serif; 
                 text-align: center; 
-                margin-top: 50px; 
+                margin: 0;  /* Remove qualquer margem da página */
+                height: 100vh;  /* Faz o body ocupar 100% da altura da tela */
+                display: flex;   /* Define o display como flex */
+                justify-content: center;  /* Centraliza os elementos horizontalmente */
+                align-items: center;  /* Centraliza os elementos verticalmente */
             }
 
             .container { 
-                display: flex; 
-                flex-direction: column; 
-                align-items: center; 
+                display: flex;  /* Flexbox */
+                flex-direction: column;  /* Coloca os botões em colunas */
+                align-items: center;  /* Centraliza os botões dentro da container */
             }
             
             .row { 
                 display: flex;
-                justify-content: center; 
-                margin: 10px 0; 
+                justify-content: center;  /* Alinha os botões na horizontal dentro da linha */
+                margin: 10px 0;  /* Dá um espaçamento entre as linhas */
             }
 
             button {
@@ -32,44 +36,67 @@
             }
 
             .normal { background-color: #007BFF; }  /* Azul */
-            /* Cores ao pressionar */
-            .pressed { background-color: #28A745; }  /* Verde */
         </style>
     </head>
 
     <body>
-        <h1>Controle de LEDs</h1>
-        <h2>LED 1</h2>
-        <button onclick="toggleLED(1, 'on')">Ligar</button>
-        <button onclick="toggleLED(1, 'off')">Desligar</button>
-        <h2>LED 2</h2>
-        <button onclick="toggleLED(2, 'on')">Ligar</button>
-        <button onclick="toggleLED(2, 'off')">Desligar</button>
-
 
         <div class="container">
             <div class="row">
-                <button id="up" class="normal" onclick="changerColor('up')">Cima</button>
-            </div>
-            <div class="row">
-                <button id="letf" class="normal" onclick="changerColor('letf')" onclick="toggleLED(1, 'on')">Esquerda</button>
-                <button id="right" class="normal" onclick="changerColor('right')">Direita</button>
+                <button id="up" class="normal" onclick="handleAction('up')">C</button>
             </div>
 
             <div class="row">
-                <button id="down" class="normal" onclick="changerColor('down')">Baixo</button>
+                <button id="left" class="normal" onclick="handleAction('left')">E</button>
+                <button id="right" class="normal" onclick="handleAction('right')">D</button>
+            </div>
+
+            <div class="row">
+                <button id="down" class="normal" onclick="handleAction('down')">B</button>
             </div>
         </div>
 
-
-
-
-
         <script>
-            function toggleLED(led, state) {
-                fetch('/led' + led + '/' + state)
+            // Função para alternar os LEDs conforme a direção
+            function handleAction(direction) {
+                // Exibe qual int foi acionado e envia os pedidos HTTP
+                switch (direction) {
+                    case 'up':
+                        alert('INTs 1 e 3 foram acionados');
+                        toggleLED(1, 'on');
+                        toggleLED(3, 'on');
+                        toggleLED(2, 'off');
+                        toggleLED(4, 'off');
+                        break;
+                    case 'down':
+                        alert('INTs 2 e 4 foram acionados');
+                        toggleLED(2, 'on');
+                        toggleLED(4, 'on');
+                        toggleLED(1, 'off');
+                        toggleLED(3, 'off');
+                        break;
+                    case 'left':
+                        alert('INT 2 foi acionado');
+                        toggleLED(2, 'on');
+                        toggleLED(1, 'off');
+                        toggleLED(3, 'off');
+                        toggleLED(4, 'off');
+                        break;
+                    case 'right':
+                        alert('INT 3 foi acionado');
+                        toggleLED(3, 'on');
+                        toggleLED(1, 'off');
+                        toggleLED(2, 'off');
+                        toggleLED(4, 'off');
+                        break;
+                }
+            }
+
+            // Função para fazer o HTTP request de acionamento dos LEDs
+            function toggleLED(int, state) {
+                fetch('/int' + int + '/' + state)
                     .then(response => response.text())
-                    .then(data => alert(data));
+                    .catch(error => console.error('Erro ao acionar o LED:', error));
             }
         </script>
     </body>
