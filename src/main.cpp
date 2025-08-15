@@ -5,10 +5,10 @@
 const char* ssid = "Teste";
 const char* password = "teste123";
 
-const int int1 = 13; // Pino do LED 1
-const int int2 = 12; // Pino do LED 2
+const int int1 = 13; 
+const int int2 = 12;
 const int int3 = 27;
-const int int4 = 25;
+const int int4 = 26;
 
 AsyncWebServer server(80);
 
