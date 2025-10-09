@@ -1,138 +1,236 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Controle de LEDs</title>
-        <style>
-            body { 
-                font-family: Arial, sans-serif; 
-                text-align: center; 
-                margin: 0;  /* Remove qualquer margem da página */
-                height: 100vh;  /* Faz o body ocupar 100% da altura da tela */
-                display: flex;   /* Define o display como flex */
-                justify-content: center;  /* Centraliza os elementos horizontalmente */
-                align-items: center;  /* Centraliza os elementos verticalmente */
-                background-color: #f0f0f0;  /* Adiciona uma cor de fundo clara */
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Robô</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
+    
+    <style>
+        * { margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes drive {
+            from { background-position-y: 0; }
+            to { background-position-y: -100px; }
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            text-align: center; 
+            height: 100vh;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            color: white;
+            overflow: hidden;
+            
+            background-color: #1a472a;
+
+            background-image:
+                linear-gradient(white, white),
+                linear-gradient(white, white),
+                repeating-linear-gradient(to bottom, #fdd835 0, #fdd835 50px, transparent 50px, transparent 100px),
+                linear-gradient(#4a4a4a, #4a4a4a);
+            
+            background-repeat: repeat-y, repeat-y, repeat-y, repeat-y; 
+            
+            background-size:
+                2px 200%,   /* Linha esquerda */
+                2px 200%,   /* Linha direita */
+                6px 200%,   /* Linha central */
+                60% 200%;   /* Asfalto */
+
+            background-position:
+                20% 0,
+                80% 0,
+                center 0,
+                center 0;
+
+            animation: drive 1.5s linear infinite;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        .container { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 40px;
+            z-index: 10;
+            
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .row { 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        button {
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: scale(0.98);
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        #center {
+            margin: 0 20px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                background-size:
+                    2px 200%,
+                    2px 200%,
+                    4px 200%,
+                    85% 200%;
+
+                background-position:
+                    7.5% 0,
+                    92.5% 0,
+                    center 0,
+                    center 0;
             }
 
-            .container { 
-                display: flex;  /* Flexbox */
-                flex-direction: column;  /* Coloca os botões em colunas */
-                align-items: center;  /* Centraliza os botões dentro da container */
-                gap: 20px;  /* Espaçamento entre as linhas */
+            h1 {
+                font-size: 1.8rem;
+            }
+        
+            .container {
+                padding: 25px;
+                gap: 15px;
+                width: 90%;
             }
             
-            .row { 
-                display: flex;
-                justify-content: center;  /* Alinha os botões na horizontal dentro da linha */
-                gap: 20px;  /* Espaçamento entre os botões */
-            }
-
             button {
-                padding: 20px 40px;
-                font-size: 20px;
-                color: white;
-                border: none;
-                cursor: pointer;
-                border-radius: 5px;
-                background-color: #007BFF; /* Azul */
-                transition: background-color 0.3s ease;  /* Suaviza a transição de cor */
+                width: 65px;
+                height: 65px;
+                font-size: 2rem;
             }
 
-            button:hover {
-                background-color: #0056b3;  /* Cor de fundo ao passar o mouse */
+            .row {
+                gap: 15px;
             }
 
-            /* Botões de posição específica */
-            .normal { 
-                background-color: #007BFF;  /* Azul */
+            #center {
+                margin: 0 15px;
             }
+        }
+    </style>
+</head>
 
-            .row.centered {
-                justify-content: space-between;  /* Distribui os botões uniformemente */
-                width: 80%;  /* Aumenta a largura para os botões do centro */
-            }
+<body>
+    
+    <h1>Controle do Robô</h1>
 
-            /* Responsividade: para telas menores, os botões são redimensionados */
-            @media (max-width: 600px) {
-                button {
-                    font-size: 16px;
-                    padding: 15px 30px;
-                }
-
-                .container {
-                    gap: 10px;  /* Reduz o espaçamento entre as linhas em telas pequenas */
-                }
-            }
-        </style>
-    </head>
-
-    <body>
-
-        <div class="container">
-            <div class="row">
-                <button id="up" class="normal" onclick="handleAction('up')">C</button>
-            </div>
-
-            <div class="row">
-                <button id="left" class="normal" onclick="handleAction('left')">E</button>
-                <button id="center" class="normal" onclick="handleAction('center')">O</button>
-                <button id="right" class="normal" onclick="handleAction('right')">D</button>
-            </div>
-
-            <div class="row">
-                <button id="down" class="normal" onclick="handleAction('down')">B</button>
-            </div>
+    <div class="container">
+        <div class="row">
+            <button id="up" onclick="handleAction('up')">
+                <span class="material-icons-outlined">arrow_upward</span>
+            </button>
         </div>
 
-        <script>
-            // Função para alternar os LEDs conforme a direção
-            function handleAction(direction) {
-                // Exibe qual int foi acionado e envia os pedidos HTTP
-                switch (direction) {
-                    case 'up':
-                        alert('INTs 1 e 3 foram acionados');
-                        toggleLED(1, 'on');
-                        toggleLED(3, 'on');
-                        toggleLED(2, 'off');
-                        toggleLED(4, 'off');
-                        break;
-                    case 'down':
-                        alert('INTs 2 e 4 foram acionados');
-                        toggleLED(2, 'on');
-                        toggleLED(4, 'on');
-                        toggleLED(1, 'off');
-                        toggleLED(3, 'off');
-                        break;
-                    case 'left':
-                        alert('INT 2 foi acionado');
-                        toggleLED(1, 'on');
-                        toggleLED(2, 'off');
-                        toggleLED(3, 'off');
-                        toggleLED(4, 'off');
-                        break;
-                    case 'right':
-                        alert('INT 3 foi acionado');
-                        toggleLED(3, 'on');
-                        toggleLED(1, 'off');
-                        toggleLED(2, 'off');
-                        toggleLED(4, 'off');
-                        break;
-                    case 'center':
-                        alert('Todos foram zerados');
-                        toggleLED(1, 'off');
-                        toggleLED(2, 'off');
-                        toggleLED(3, 'off');
-                        toggleLED(4, 'off');
-                        break;
-                }
-            }
+        <div class="row">
+            <button id="left" onclick="handleAction('left')">
+                <span class="material-icons-outlined">arrow_back</span>
+            </button>
+            <button id="center" onclick="handleAction('center')">
+                 <span class="material-icons-outlined">stop_circle</span>
+            </button>
+            <button id="right" onclick="handleAction('right')">
+                 <span class="material-icons-outlined">arrow_forward</span>
+            </button>
+        </div>
 
-            // Função para fazer o HTTP request de acionamento dos LEDs
-            function toggleLED(int, state) {
-                fetch('/int' + int + '/' + state)
-                    .then(response => response.text())
-                    .catch(error => console.error('Erro ao acionar o LED:', error));
+        <div class="row">
+            <button id="down" onclick="handleAction('down')">
+                 <span class="material-icons-outlined">arrow_downward</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function handleAction(direction) {
+            switch (direction) {
+                case 'up':
+                    toggleLED(1, 'on');
+                    toggleLED(3, 'on');
+                    toggleLED(2, 'off');
+                    toggleLED(4, 'off');
+                    break;
+                case 'down':
+                    toggleLED(2, 'on');
+                    toggleLED(4, 'on');
+                    toggleLED(1, 'off');
+                    toggleLED(3, 'off');
+                    break;
+                case 'left':
+                    toggleLED(1, 'on');
+                    toggleLED(2, 'off');
+                    toggleLED(3, 'off');
+                    toggleLED(4, 'off');
+                    break;
+                case 'right':
+                    toggleLED(3, 'on');
+                    toggleLED(1, 'off');
+                    toggleLED(2, 'off');
+                    toggleLED(4, 'off');
+                    break;
+                case 'center':
+                    toggleLED(1, 'off');
+                    toggleLED(2, 'off');
+                    toggleLED(3, 'off');
+                    toggleLED(4, 'off');
+                    break;
             }
-        </script>
-    </body>
+        }
+        function toggleLED(int, state) {
+            fetch('/int' + int + '/' + state)
+                .then(response => response.text())
+                .catch(error => console.error('Erro ao acionar o LED:', error));
+        }
+    </script>
+</body>
 </html>
