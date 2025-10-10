@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Robô</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
+    
+    <style>
+        * { margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes drive {
+            from { background-position-y: 0; }
+            to { background-position-y: -100px; }
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            text-align: center; 
+            height: 100vh;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            color: white;
+            overflow: hidden;
+            
+            background-color: #1a472a;
+
+            background-image:
+                linear-gradient(white, white),
+                linear-gradient(white, white),
+                repeating-linear-gradient(to bottom, #fdd835 0, #fdd835 50px, transparent 50px, transparent 100px),
+                linear-gradient(#4a4a4a, #4a4a4a);
+            
+            background-repeat: repeat-y, repeat-y, repeat-y, repeat-y; 
+            
+            background-size:
+                2px 200%,   /* Linha esquerda */
+                2px 200%,   /* Linha direita */
+                6px 200%,   /* Linha central */
+                60% 200%;   /* Asfalto */
+
+            background-position:
+                20% 0,
+                80% 0,
+                center 0,
+                center 0;
+
+            animation: drive 1.5s linear infinite;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        .container { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 40px;
+            z-index: 10;
+            
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .row { 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        button {
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: scale(0.98);
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        #center {
+            margin: 0 20px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                background-size:
+                    2px 200%,
+                    2px 200%,
+                    4px 200%,
+                    85% 200%;
+
+                background-position:
+                    7.5% 0,
+                    92.5% 0,
+                    center 0,
+                    center 0;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        
+            .container {
+                padding: 25px;
+                gap: 15px;
+                width: 90%;
+            }
+            
+            button {
+                width: 65px;
+                height: 65px;
+                font-size: 2rem;
+            }
+
+            .row {
+                gap: 15px;
+            }
+
+            #center {
+                margin: 0 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <h1>Controle do Robô</h1>
+
+    <div class="container">
+        <div class="row">
+            <button id="up" onclick="handleAction('up')">
+                <span class="material-icons-outlined">arrow_upward</span>
+            </button>
+        </div>
+
+        <div class="row">
+            <button id="left" onclick="handleAction('left')">
+                <span class="material-icons-outlined">arrow_back</span>
+            </button>
+            <button id="center" onclick="handleAction('center')">
+                 <span class="material-icons-outlined">stop_circle</span>
+            </button>
+            <button id="right" onclick="handleAction('right')">
+                 <span class="material-icons-outlined">arrow_forward</span>
+            </button>
+        </div>
+
+        <div class="row">
+            <button id="down" onclick="handleAction('down')">
+                 <span class="material-icons-outlined">arrow_downward</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function handleAction(direction) {
+            switch (direction) {
+                case 'up':
+                    toggleLED(1, 'on');
+                    toggleLED(3, 'on');
+                    toggleLED(2, 'off');
+                    toggleLED(4, 'off');
+                    break;
+                case 'down':
+                    toggleLED(2, 'on');
+                    toggleLED(4, 'on');
+                    toggleLED(1, 'off');
+                    toggleLED(3, 'off');
+                    break;
+                case 'left':
+                    toggleLED(1, 'on');
+                    toggleLED(2, 'off');
+                    toggleLED(3, 'off');
+                    toggleLED(4, 'off');
+                    break;
+                case 'right':
+                    toggleLED(3, 'on');
+                    toggleLED(1, 'off');
+                    toggleLED(2, 'off');
+                    toggleLED(4, 'off');
+                    break;
+                case 'center':
+                    toggleLED(1, 'off');
+                    toggleLED(2, 'off');
+                    toggleLED(3, 'off');
+                    toggleLED(4, 'off');
+                    break;
+            }
+        }
+        function toggleLED(int, state) {
+            fetch('/int' + int + '/' + state)
+                .then(response => response.text())
+                .catch(error => console.error('Erro ao acionar o LED:', error));
+        }
+    </script>
+</body>
+</html>
